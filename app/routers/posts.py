@@ -54,3 +54,4 @@ async def get_my_posts (db : Session = Depends (get_db),
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail = "User has no posts yet")
+
