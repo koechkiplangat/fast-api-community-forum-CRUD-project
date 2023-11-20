@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from typing import Annotated
+from fastapi.security import OAuth2PasswordRequestForm
 
 from ..schemas import CreateRegisteredUsers, RegistrationResponse
 from ..database import get_db
 from .. import models,util, oauth2
 
 router = APIRouter(prefix = "/auth", tags=["AUTHENTICATION"])
-   
+
 #Signup endpoint
 @router.post("/signup", status_code = status.HTTP_201_CREATED, response_model=RegistrationResponse)
 async def register_user (user_details: CreateRegisteredUsers, db: Session = Depends (get_db)):

@@ -1,8 +1,7 @@
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status, HTTPException
 from typing import Annotated
 from sqlalchemy.orm import Session
-import asyncio
 
 from datetime import datetime,timedelta
 from jose import jwt, JWTError
@@ -51,7 +50,7 @@ async def verify_acess_token (token: Annotated [str, Depends (oauth2_scheme)], e
 
 async def get_current_user (token : str  = Depends(oauth2_scheme), db : Session =  Depends (get_db)):
 
-    tokens =  await verify_acess_token(token, exception_dependency)
+    tokens =  await verify_acess_token(token)
 
     user = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.username == tokens.username).first()
 

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from .. import models
 from ..database import get_db
 from ..oauth2 import  get_current_user
-from .. schemas import UserPost, PostsResponse
+from .. schemas import UserPost
 
 router = APIRouter(prefix = "/posts", tags= ["POSTS"] )
 
