@@ -15,11 +15,11 @@ async def register_user (user_details: CreateRegisteredUsers, db: Session = Depe
     hashed_password = util.hash(user_details.password)
     user_details.password = hashed_password
     
-    user_name = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.username == user_details.username).first()
+    user_name = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.userName == user_details.username).first()
 
     if  user_name is not None:
         raise HTTPException(status_code = status.HTTP_405_METHOD_NOT_ALLOWED, 
-                            detail = "User already registered") 
+                            detail = "Username already exists") 
     
     new_user = models.RegisteredUsers(**user_details.model_dump())
     

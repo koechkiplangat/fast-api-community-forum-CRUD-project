@@ -2,8 +2,22 @@ from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy import text
 from sqlalchemy_utils.types import ChoiceType
+from typing import Optional
 
 from .database import Base
+
+class RegisteredUsers (Base):
+    __tablename__ ="userDetail"
+
+    userId = Column(Integer, primary_key=True, nullable=False)
+    firstName = Column (String, nullable =False, unique =False)
+    lastName = Column (String, nullable = False, unique = False)
+    userName = Column(String, nullable = False, unique=True)
+    userEmail = Column (String, unique =  True, nullable=False)
+    userPassword = Column(String, nullable = False)
+    isAdmin = Column (Optional[bool], default=False )
+    registeredAt = Column (TIMESTAMP(timezone=True), server_default= text ('now()'))
+ 
 
 class UserPosts(Base):
 
@@ -15,35 +29,24 @@ class UserPosts(Base):
 
     )
      
-    __tablename__ = "user_posts"
+    __tablename__ = "userPost"
 
-    id = Column(Integer, primary_key=True, nullable=False)
-    tittle = Column (String (255), nullable = False)
-    category = Column(ChoiceType(choices=POSTS_TOPICS),default="BATTERIES")
-    body = Column (String, nullable = False)
-    created_at = Column (TIMESTAMP(timezone=True), server_default= text ('now()'))
-    author_id = Column (Integer, nullable = False)
-    #superuser_post_id = Column  (Integer, ForeignKey ("superusers.id", ondelete = "CASCADE"), nullable = False)
-
-
-class RegisteredUsers (Base):
-    __tablename__ ="users"
-
-    id = Column(Integer, primary_key=True, nullable=False)
-    username = Column(String, nullable = False, unique=True)
-    password = Column(String, nullable = False)
-    registered_at = Column (TIMESTAMP(timezone=True), server_default= text ('now()'))
-
+    postId = Column(Integer, primary_key=True, nullable=False)
+    userId = Column (Integer, ForeignKey("userDetail.userId", ondelete= "CASCADE"), nullable = False)
+    postCategory = Column(ChoiceType(choices=POSTS_TOPICS),default="BATTERIES")
+    postTittle = Column (String (255), nullable = False)
+    postText  = Column (String, nullable = False)
+    createdAt = Column (TIMESTAMP(timezone=True), server_default= text ('now()'))
+    
 
 class Replies (Base):
-    __tablename__ = "replies"
+    __tablename__ = "userComment"
 
-    id = Column(Integer, primary_key=True, nullable=False)
-    content = Column (String, nullable = False)
-    comment_created_at = Column (TIMESTAMP(timezone=True), server_default= text ('now()'))
-    author_id = Column (Integer, ForeignKey ("users.id", ondelete = "CASCADE"), nullable = False)
-    superuser_post_id = Column  (Integer, ForeignKey ("superusers.id", ondelete = "CASCADE"), nullable = False)
-    parent_post = Column (Integer, ForeignKey ("user_posts.id", ondelete = "CASCADE"), nullable = False)
+    commentId = Column(Integer, primary_key=True, nullable=False)
+    postId = Column (Integer, ForeignKey("userPost.postID", ondelete = "CASCADE"), nullable = False)
+    userId = Column (Integer, ForeignKey("userDetail.userId", ondelete= "CASCADE"), nullable = False)
+    contentText = Column (String, nullable = False)
+    createdAt = Column (TIMESTAMP(timezone=True), server_default= text ('now()'))
 
-    
+
 
