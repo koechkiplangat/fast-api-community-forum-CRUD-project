@@ -13,7 +13,7 @@ router = APIRouter(prefix = "/posts", tags= ["POSTS"] )
 @router.post("/new_posts", status_code=status.HTTP_201_CREATED)
 async def create_new_post(user_post: UserPost, db:  Session = Depends (get_db), current_user: str = Depends (get_current_user)):
 
-    new_post = models.UserPosts(userId = current_user.id,  **user_post.model_dump())
+    new_post = models.UserPosts(userId = current_user.userId,  **user_post.model_dump())
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -47,7 +47,7 @@ async def get_specific_post (id  : int , db : Session  = Depends (get_db), curre
 async def get_my_posts (db : Session = Depends (get_db), 
                         current_user: str = Depends(get_current_user)):
 
-    my_posts = db.query(models.UserPosts).filter(models.UserPosts.UserId == current_user.id).all()
+    my_posts = db.query(models.UserPosts).filter(models.UserPosts.userId == current_user.userId).all()
 
     if my_posts:
         return my_posts
@@ -57,7 +57,7 @@ async def get_my_posts (db : Session = Depends (get_db),
 
 # Filtering by categories
 
-@router.get("/{category}", status_code = status.HTTP_200_OK)
+@router.get("/categories/{category}", status_code = status.HTTP_200_OK)
 async def lifepo4_category (category : str, db : Session  = Depends (get_db),
                              current_user: str = Depends (get_current_user)):
     

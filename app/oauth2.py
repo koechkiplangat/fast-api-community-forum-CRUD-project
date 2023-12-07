@@ -33,9 +33,10 @@ def create_acess_tokens (data:dict):
 credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"})
 
-exception_dependency: Annotated [str, Depends (credentials_exception)]
+def exception_dependency():
+    return Annotated [str, Depends (credentials_exception)]
 
-async def verify_acess_token (token: Annotated [str, Depends (oauth2_scheme)], exception_dependency):
+async def verify_acess_token (token: Annotated [str, Depends (oauth2_scheme)], exception_dependency = Depends (exception_dependency)):
     
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
