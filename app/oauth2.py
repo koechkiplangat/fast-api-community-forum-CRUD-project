@@ -52,6 +52,6 @@ async def get_current_user (token : str  = Depends(oauth2_scheme), db : Session 
 
     tokens =  await verify_acess_token(token)
 
-    user = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.username == tokens.username).first()
+    user = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.userName == tokens.username).first()
 
     return user

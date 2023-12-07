@@ -5,6 +5,7 @@ from datetime import datetime
 class CreateRegisteredUsers(BaseModel):
     username: EmailStr
     password : str
+
     #registered_at: Optional[datetime]
 
     #class Config:
@@ -25,12 +26,12 @@ class TokenData(BaseModel):
 
 class UserPost(BaseModel):
      
-     tittle: str
-     category:Optional[str]="BATTERIES"
-     body: str
+    postTittle: str
+    postCategory:Optional[str]="BATTERIES"
+    postText: str
 
-     class Config:
-         orm_mode  = True
+    class Config:
+        orm_mode  = True
 
 class PostsResponse(BaseModel):
 

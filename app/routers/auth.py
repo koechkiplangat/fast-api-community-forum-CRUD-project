@@ -33,7 +33,7 @@ async def register_user (user_details: CreateRegisteredUsers, db: Session = Depe
 @router.post("/login", status_code = status.HTTP_200_OK)
 async def login(user_details : OAuth2PasswordRequestForm = Depends(), db : Session = Depends (get_db)):
 
-    user = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.username == user_details.username).first()
+    user = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.userName == user_details.username).first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 

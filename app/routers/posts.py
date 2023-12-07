@@ -11,9 +11,9 @@ router = APIRouter(prefix = "/posts", tags= ["POSTS"] )
 
 #Creating new posts - meant for users who are creating a post
 @router.post("/new_posts", status_code=status.HTTP_201_CREATED)
-async def create_new_post(new_post: UserPost, db:  Session = Depends (get_db), current_user: str = Depends (get_current_user)):
+async def create_new_post(user_post: UserPost, db:  Session = Depends (get_db), current_user: str = Depends (get_current_user)):
 
-    new_post = models.UserPosts(author_id = current_user.id,  **new_post.model_dump())
+    new_post = models.UserPosts(userId = current_user.id,  **user_post.model_dump())
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
@@ -34,7 +34,7 @@ async def get_all_posts (db : Session  = Depends(get_db), current_user : str = D
 @router.get("/posts/{id}", status_code=status.HTTP_200_OK)
 async def get_specific_post (id  : int , db : Session  = Depends (get_db), current_user: str = Depends(get_current_user)):
 
-    posts = db.query(models.UserPosts).filter(models.UserPosts.id == id).first()
+    posts = db.query(models.UserPosts).filter(models.UserPosts.postId == id).first()
 
     if posts is None:
         return HTTPException (status_code = status.HTTP_404_NOT_FOUND, 
@@ -47,7 +47,7 @@ async def get_specific_post (id  : int , db : Session  = Depends (get_db), curre
 async def get_my_posts (db : Session = Depends (get_db), 
                         current_user: str = Depends(get_current_user)):
 
-    my_posts = db.query(models.UserPosts).filter(models.UserPosts.author_id == current_user.id).all()
+    my_posts = db.query(models.UserPosts).filter(models.UserPosts.UserId == current_user.id).all()
 
     if my_posts:
         return my_posts
@@ -55,3 +55,16 @@ async def get_my_posts (db : Session = Depends (get_db),
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail = "User has no posts yet")
 
+# Filtering by categories
+
+@router.get("/{category}", status_code = status.HTTP_200_OK)
+async def lifepo4_category (category : str, db : Session  = Depends (get_db),
+                             current_user: str = Depends (get_current_user)):
+    
+    posts = db.query (models.UserPosts).filter (models.UserPosts.postCategory == category).all()
+
+    if posts:
+        return posts
+    raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,
+                        detail = "Resource requested not available")
+    
