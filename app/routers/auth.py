@@ -12,10 +12,10 @@ router = APIRouter(prefix = "/auth", tags=["AUTHENTICATION"])
 @router.post("/signup", status_code = status.HTTP_201_CREATED, response_model=RegistrationResponse)
 async def register_user (user_details: CreateRegisteredUsers, db: Session = Depends (get_db)):
 
-    hashed_password = util.hash(user_details.password)
-    user_details.password = hashed_password
+    hashed_password = util.hash(user_details.userPassword)
+    user_details.userPassword = hashed_password
     
-    user_name = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.userName == user_details.username).first()
+    user_name = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.userName == user_details.userName).first()
 
     if  user_name is not None:
         raise HTTPException(status_code = status.HTTP_405_METHOD_NOT_ALLOWED, 
@@ -39,11 +39,11 @@ async def login(user_details : OAuth2PasswordRequestForm = Depends(), db : Sessi
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
                             detail = "Credentials entered are Incorrect")
     
-    if not util.verify(user_details.password, user.password):
+    if not util.verify(user_details.password, user.userPassword):
          raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
                             detail = "Credentials entered are Incorrect")
     
-    acess_token = oauth2.create_acess_tokens(data = {"sub": user.username})
+    acess_token = oauth2.create_acess_tokens(data = {"sub": user.userName})
 
     return {"acess_token":acess_token, "token_type": "Bearer"}
 

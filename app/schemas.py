@@ -2,9 +2,13 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
-class CreateRegisteredUsers(BaseModel):
-    username: EmailStr
-    password : str
+class CreateRegisteredUsers(BaseModel): 
+    firstName: str
+    lastName:str
+    userName: str
+    userEmail: EmailStr
+    userPassword : str
+    isAdmin:  Optional[bool]
 
     #registered_at: Optional[datetime]
 
@@ -16,8 +20,8 @@ class CreateSuperUser(BaseModel):
     password : str
 
 class RegistrationResponse(BaseModel):
-    username: EmailStr
-    registered_at: datetime
+    userName: EmailStr
+    registeredAt: datetime
 
 
 class TokenData(BaseModel):

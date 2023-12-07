@@ -9,7 +9,7 @@ from .database import Base
 class RegisteredUsers (Base):
     __tablename__ ="userDetail"
 
-    userId = Column(Integer, primary_key=True, nullable=False)
+    userId = Column(Integer, primary_key=True, nullable=False, unique = True)
     firstName = Column (String, nullable =False, unique =False)
     lastName = Column (String, nullable = False, unique = False)
     userName = Column(String, nullable = False, unique=True)
