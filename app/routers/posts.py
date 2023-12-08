@@ -68,3 +68,39 @@ async def lifepo4_category (category : str, db : Session  = Depends (get_db),
     raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,
                         detail = "Resource requested not available")
     
+# delete specific function
+@router.delete("/delete/{postId}", status_code = status.HTTP_202_ACCEPTED)
+async def delete_post (postId: int, db : Session = Depends (get_db), current_user: str = Depends (get_current_user)):
+
+    target_post = db.query(models.UserPosts).filter(models.UserPosts.postId == postId).first()
+
+    if target_post is None:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND,  
+                            detail = "Post not found ")
+    
+    if target_post.postId != current_user.userId:
+        raise HTTPException(status_code = status.HTTP_403_FORBIDDEN,
+                            detail = "Action not allowed!")
+    
+    db.delete(target_post)
+
+    db.commit()
+
+# Delete existing user - Admin only / user can delete their own account
+@router.delete("/delete_account/{userId}", status_code = status.HTTP_200_OK)
+async def delete_user (userId: int, db: Session = Depends(get_db), current_user: str = Depends (get_current_user)):
+
+    target_user  = db.query(models.RegisteredUsers).filter(models.RegisteredUsers.userId == userId).first()
+
+    if target_user is None:
+        raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+                            detail = "Operation attemped is not allowed!")
+
+    db.delete(target_user)
+
+    db.commit()
+    
+
+
+
+    
